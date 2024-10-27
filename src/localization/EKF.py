@@ -207,6 +207,11 @@ class ExtendedKalmanFilter():
         self.motion = self.measurements[self.measurements.type == -1].rename(columns={'range_l': 'v', 'bearing_l': 'omega'})
         landmarks = self.measurements[self.measurements.type != -1]
         self.sensor = filter_static_landmarks(landmarks, self.barcodes_data)
+
+    def get_estimated_points(self):
+        # Extract x and y coordinates of the estimated states
+        estimated_points = self.states[:, 1:3]  # Columns 1 and 2 contain x and y
+        return estimated_points
         
 def build_timeseries(data,cols):
     timeseries = pd.DataFrame(data, columns=cols)
@@ -219,6 +224,8 @@ def filter_static_landmarks(lm, barcodes):
         lm[lm==l]=L
     lm = lm[lm.type > 5] # Keep only static landmarks 
     return lm 
+
+
 
 if __name__ == "__main__":
     # # Dataset 0
